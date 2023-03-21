@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	printf(serveraddr.sin_addr.s_addr);
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = bind(listen_sock, (struct sockaddr *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("bind()");
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
 		}
 
 		// 접속한 클라이언트 정보 출력
-		char addr[INET_ADDRSTRLEN]; //ipv4를 string으로 나타냈을 때 기준
+		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr.sin_port));

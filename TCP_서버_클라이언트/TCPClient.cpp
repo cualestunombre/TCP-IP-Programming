@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr,0,sizeof(serveraddr)); 
 	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET,SERVERIP,&serveraddr.sin_addr);
+	inet_pton(AF_INET,SERVERIP,&serveraddr.sin_addr); //숫자로 변환 함
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock,(struct sockaddr *)&serveraddr, sizeof(serveraddr));
 	if(retval == SOCKET_ERROR) err_quit("connect()");
