@@ -3,6 +3,53 @@
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
+// 내부 구현용 함수
+int _recv_ahead(SOCKET s, char *p)
+{
+	static __thread int nbytes = 0;
+	static __thread char buf[1024];
+	static __thread char *ptr;
+
+	if (nbytes == 0 || nbytes == SOCKET_ERROR) {
+		nbytes = recv(s, buf, sizeof(buf), 0);
+		if (nbytes == SOCKET_ERROR) {
+			return SOCKET_ERROR;
+		}
+		else if (nbytes == 0)
+			return 0;
+		ptr = buf;
+	}
+
+	--nbytes;
+	*p = *ptr++;
+	return 1;
+}
+
+// 사용자 정의 데이터 수신 함수
+int recvline(SOCKET s, char *buf, int maxlen)
+{
+	int n, nbytes;
+	char c, *ptr = buf;
+
+	for (n = 1; n < maxlen; n++) {
+		nbytes = _recv_ahead(s, &c);
+		if (nbytes == 1) {
+			*ptr++ = c;
+			if (c == '\n')
+				break;
+		}
+		else if (nbytes == 0) {
+			*ptr = 0;
+			return n - 1;
+		}
+		else
+			return SOCKET_ERROR;
+	}
+
+	*ptr = 0;
+	return n;
+}
+
 int main(int argc, char *argv[])
 {
 	int retval;
@@ -40,7 +87,7 @@ int main(int argc, char *argv[])
 		}
 
 		// 접속한 클라이언트 정보 출력
-		char addr[INET_ADDRSTRLEN]; //ipv4를 string으로 나타냈을 때 기준
+		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr.sin_port));
@@ -48,7 +95,7 @@ int main(int argc, char *argv[])
 		// 클라이언트와 데이터 통신
 		while (1) {
 			// 데이터 받기
-			retval = recv(client_sock, buf, BUFSIZE, 0);
+			retval = recvline(client_sock, buf, BUFSIZE + 1);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				break;
@@ -57,15 +104,7 @@ int main(int argc, char *argv[])
 				break;
 
 			// 받은 데이터 출력
-			buf[retval] = '\0';
-			printf("[TCP/%s:%d] %s\n", addr, ntohs(clientaddr.sin_port), buf);
-
-			// 데이터 보내기
-			retval = send(client_sock, buf, retval, 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("send()");
-				break;
-			}
+			printf("[TCP/%s:%d] %s", addr, ntohs(clientaddr.sin_port), buf);
 		}
 
 		// 소켓 닫기
