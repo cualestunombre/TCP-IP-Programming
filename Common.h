@@ -21,7 +21,7 @@ typedef int SOCKET;
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char *msg)
 {
-	char *msgbuf = strerror(errno); // strerror는 string.h의 함수, errno는 전역변수로, 에럳러코드를 제공함
+	char *msgbuf = strerror(errno); // strerror는 string.h의 함수, errno는 전역변수로, 에러코드를 제공함
 	printf("[%s] %s\n", msg, msgbuf);
 	exit(1);
 }

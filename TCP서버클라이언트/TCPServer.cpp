@@ -8,16 +8,19 @@ int main(int argc, char *argv[])
 	int retval;
 
 	// 소켓 생성
-	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);//주소체계, 소켓타입, 프로토콜
+	//listen_sock에는 파일 디스크립터 번호가 등록 됨
+
 	if (listen_sock == INVALID_SOCKET) err_quit("socket()");
 
 	// bind()
+	// sockaddr_in 소켓 주소 구조체
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	printf(serveraddr.sin_addr.s_addr);
-	serveraddr.sin_port = htons(SERVERPORT);
+	//초기화를 반드시 해줘야 한다
+	serveraddr.sin_family = AF_INET; //주소체계
+	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY); //ip주소
+	serveraddr.sin_port = htons(SERVERPORT);  //포트
 	retval = bind(listen_sock, (struct sockaddr *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("bind()");
 
@@ -34,6 +37,7 @@ int main(int argc, char *argv[])
 	while (1) {
 		// accept()
 		addrlen = sizeof(clientaddr);
+		// accept할 소켓이 나타날 때까지 대기상태에 빠짐
 		client_sock = accept(listen_sock, (struct sockaddr *)&clientaddr, &addrlen);
 		if (client_sock == INVALID_SOCKET) {
 			err_display("accept()");
