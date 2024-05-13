@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]){
     int retval;
 
-    SOCKET listen_sock = socket(AF_INET, SOCKET_STREAM,0);
+    SOCKET listen_sock = socket(AF_INET, SOCK_STREAM,0);
     if(listen_sock == INVALID_SOCKET) err_quit("socket()");
 
     //bind()

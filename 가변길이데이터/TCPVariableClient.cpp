@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
 	retval = connect(sock,(struct sockaddr *)&serveraddr,sizeof(serveraddr));
 	int len;	
 	char buf[BUFSIZE];
-	const char* testdata[]={"안녕하세여","반가워요","hi","bye", "hello world"};
+	const char* testdata[]={"안녕하세여ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅌㅊㅋㅌㅊㅋㅌㅊㅋㅌㅊ","반가워요","hi","bye", "hello world"};
 	for(int i=0;i<4;i++){
 		len = (int)strlen(testdata[i]);
 		strncpy(buf, testdata[i], len);

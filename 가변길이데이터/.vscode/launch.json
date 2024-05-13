@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": true,
+      "externalConsole": false,
+      "cwd": "/Users/woo/Desktop/code/TCP-IP-Programming/가변길이데이터",
+      "program": "/Users/woo/Desktop/code/TCP-IP-Programming/가변길이데이터/build/Debug/outDebug",
+      "MIMode": "gdb"
+    }
+  ]
+}
